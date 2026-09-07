@@ -79,24 +79,24 @@ the entry stops connecting by itself so the next visit asks again.
 
 ## Icons
 
-Every icon is rendered from **`overlay/client/img/logo-art.svg`**, a redraw of the AfterNET mark
-(a `#426bad` disc, the `#314a7b` ring offset to the lower right, the wordmark in `#c6d6f2`). The
-only original we had was a 100×100 GIF, enough for a favicon and nothing larger, so the mark was
-rebuilt as vector and every size comes from that. To change the mark, edit the SVG and re-render:
+Every icon is rendered from **`overlay/client/img/logo-art.png`**: the AfterNET mark cut out of the
+original `AfterNETLogoBig.psd` (Photoshop's own flattened render, with its bevel, at 601px on
+transparency — the background layer flood-filled away and the alpha eroded four pixels to drop the
+drop shadow). The 100×100 GIF everyone has is that same artwork downscaled. To regenerate the set
+from it:
 
 ```sh
-inkscape logo-art.svg -w 1024 -h 1024 -o mark.png
-for s in 192 512; do convert mark.png -resize ${s}x${s} PNG32:icon-$s.png; done         # purpose: any
-convert mark.png -resize 256x256 PNG32:logo-tile.png                                   # sidebar + splash
-for s in 192 512; do m=$((s*80/100)); convert -size ${s}x${s} xc:'#101720' \
-  \( mark.png -resize ${m}x${m} \) -gravity center -composite icon-maskable-$s.png; done  # art in the central 80%
-for s in 120 152 167 180; do m=$((s*88/100)); convert -size ${s}x${s} xc:'#101720' \
-  \( mark.png -resize ${m}x${m} \) -gravity center -composite apple-touch-icon-$s.png; done  # opaque, iOS
+M=logo-art.png
+for s in 192 512; do convert $M -resize ${s}x${s} -background none -gravity center -extent ${s}x${s} PNG32:icon-$s.png; done
+convert $M -resize 256x256 -background none -gravity center -extent 256x256 PNG32:logo-tile.png
+for s in 192 512; do m=$((s*80/100)); convert -size ${s}x${s} xc:'#101720' \( $M -resize ${m}x${m} \) -gravity center -composite icon-maskable-$s.png; done
+for s in 120 152 167 180; do m=$((s*88/100)); convert -size ${s}x${s} xc:'#101720' \( $M -resize ${m}x${m} \) -gravity center -composite apple-touch-icon-$s.png; done
+convert $M \( -clone 0 -resize 16x16 \) \( -clone 0 -resize 32x32 \) \( -clone 0 -resize 48x48 \) -delete 0 ../favicon.ico
 ```
 
-The favicons (`favicon.ico`, `img/favicon-alerted.ico`) are still from the GIF; at 48px and under
-the two are indistinguishable. Which file is used where is in the branding doc under "Files a
-rebranded deploy overwrites".
+Maskable icons keep the art inside the central 80% on the theme's navy so Android can round or
+circle-crop them; the Apple ones are opaque on the same navy, since iOS composites alpha on black.
+Which file is used where is in the branding doc under "Files a rebranded deploy overwrites".
 
 ## Building it locally
 
