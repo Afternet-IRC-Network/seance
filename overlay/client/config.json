@@ -4,10 +4,12 @@
   "description": "Chat on AfterNET from your browser",
   "defaultNetwork": {
     "name": "AfterNET",
-    "host": "irc.afternet.org",
-    "port": 443,
+    "host": "fractalrealities.afternet.org",
+    "port": 9998,
     "tls": true,
-    "channels": ["#afternet"],
+    "channels": [
+      "#afternet"
+    ],
     "nick": "Guest????",
     "lockHost": true
   },

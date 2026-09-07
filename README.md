@@ -61,11 +61,10 @@ the entry stops connecting by itself so the next visit asks again.
 
 ## Before this can go live
 
-- [ ] **The WebSocket endpoint.** `defaultNetwork.host`/`port` in `overlay/client/config.json` are
-      a placeholder. AfterNET needs an ircd listening for WebSockets — nefarious2's
-      `ircv3.2-upgrade` branch, which has both the WS listener and the IRCv3.2 caps Seance uses.
-      Pages is HTTPS, so it must be **`wss://`**: a browser will not open a `ws://` socket from an
-      HTTPS page. Set the host and port here once it is up, and check it with
+- [x] **The WebSocket endpoint** is `wss://fractalrealities.afternet.org:9998/` (checked 2026-09-07:
+      answers the WS upgrade with the `text.ircv3.net` subprotocol and advertises `sasl=PLAIN`,
+      `draft/persistence`, `draft/webpush`, `draft/chathistory` and `draft/multiline`). Pages is
+      HTTPS, so it has to stay `wss://`. Re-check any change with
       `node tools/irc-ws-probe.mjs wss://host:port/ somenick` from a Seance checkout.
 - [ ] **Icons.** The build still ships Seance's ghost artwork. See below.
 - [ ] **The upstream features.** `theme: "cobalt"` and `features.signIn` need
