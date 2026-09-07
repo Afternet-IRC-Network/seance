@@ -1,0 +1,33 @@
+{
+  "appName": "AfterNET Chat",
+  "shortName": "AfterNET",
+  "description": "Chat on AfterNET from your browser",
+  "defaultNetwork": {
+    "name": "AfterNET",
+    "host": "irc.afternet.org",
+    "port": 443,
+    "tls": true,
+    "channels": ["#afternet"],
+    "nick": "Guest????",
+    "lockHost": true
+  },
+  "theme": "cobalt",
+  "themeColor": "#101720",
+  "links": {
+    "website": "https://www.afternet.org/",
+    "help": "https://www.afternet.org/help"
+  },
+  "features": {
+    "signIn": true,
+    "guestAccess": true,
+    "allowCustomServer": false,
+    "multiNetwork": false,
+    "saveNetworks": true
+  },
+  "strings": {
+    "connect.signInTitle": "Sign in to AfterNET",
+    "connect.signInIntro": "Use your AfterNET account, or pick a nick and come in as a guest.",
+    "connect.guestTitle": "No account?",
+    "connect.guestSubmit": "Come in as a guest"
+  }
+}

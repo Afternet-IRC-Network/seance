@@ -1,0 +1,124 @@
+# Build Seance with this repository's branding and publish it to GitHub Pages.
+#
+# Nothing of the client lives here. The build checks Seance out at the ref in
+# `upstream.ref`, copies `overlay/` over its tree, and builds that — so taking
+# an upstream fix is a one-line change to `upstream.ref`, and there is never a
+# merge to resolve. See README.md.
+name: Pages
+
+on:
+  push:
+    branches: [main]
+  release:
+    types: [published]
+  workflow_dispatch:
+    inputs:
+      ref:
+        description: "Seance ref to build (branch, tag or SHA). Blank uses upstream.ref."
+        required: false
+        type: string
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# One site, one deployment: a second run supersedes the one in flight.
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out the branding
+        uses: actions/checkout@v4
+        with:
+          path: branding
+
+      - name: Decide which Seance to build
+        id: pin
+        run: |
+          ref='${{ inputs.ref }}'
+          if [ -z "$ref" ]; then
+            ref="$(tr -d '[:space:]' < branding/upstream.ref)"
+          fi
+          if [ -z "$ref" ]; then
+            echo "::error::upstream.ref is empty and no ref was given"
+            exit 1
+          fi
+          echo "ref=$ref" >> "$GITHUB_OUTPUT"
+          echo "Building evilnet/seance at $ref"
+
+      - name: Check out Seance
+        uses: actions/checkout@v4
+        with:
+          repository: evilnet/seance
+          ref: ${{ steps.pin.outputs.ref }}
+          path: seance
+          # Tags and history, so a build can name itself from the latest tag.
+          fetch-depth: 0
+
+      - name: Apply the branding
+        run: |
+          cp -Rv branding/overlay/. seance/
+          echo "--- config.json as built ---"
+          cat seance/client/config.json
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: seance/.node-version
+
+      - name: Enable Yarn (classic) via corepack
+        run: corepack enable
+
+      - name: Install
+        run: yarn --frozen-lockfile --non-interactive
+        working-directory: seance
+
+      - name: Build
+        run: yarn build
+        working-directory: seance
+        env:
+          NODE_ENV: production
+          SEANCE_VERSION: ${{ github.event_name == 'release' && github.event.release.tag_name || '' }}
+
+      # A copy that silently misses would publish an unbranded client, which
+      # is not obvious from a green build. Check the branding actually reached
+      # the output rather than trusting the copy.
+      - name: Check the branding reached the build
+        run: |
+          set -e
+          test -f seance/public/config.json
+          grep -q 'AfterNET' seance/public/config.json
+          grep -q 'AfterNET' seance/public/index.html
+          echo "branding present in public/"
+
+          # The blue theme and the sign-in panel are upstream pull requests
+          # (evilnet/seance#40, #41). Until they land the config still asks
+          # for them and Seance falls back, which is a working client with
+          # the wrong colours -- worth saying out loud, not worth failing on.
+          if [ ! -f seance/public/themes/cobalt.css ]; then
+            echo "::warning::the cobalt theme is not in this Seance ref yet (evilnet/seance#40); the deploy falls back to the default theme"
+          fi
+          if ! grep -q 'signIn' seance/public/js/bundle.js; then
+            echo "::warning::features.signIn is not in this Seance ref yet (evilnet/seance#41); the deploy shows the ordinary connect form"
+          fi
+
+      - name: Upload site
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: seance/public
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy
+        id: deployment
+        uses: actions/deploy-pages@v4
