@@ -66,8 +66,11 @@ the entry stops connecting by itself so the next visit asks again.
       `draft/persistence`, `draft/webpush`, `draft/chathistory` and `draft/multiline`). Pages is
       HTTPS, so it has to stay `wss://`. Re-check any change with
       `node tools/irc-ws-probe.mjs wss://host:port/ somenick` from a Seance checkout.
-- [ ] **Icons.** The build still ships Seance's ghost artwork. See below.
-- [ ] **The upstream features.** `theme: "cobalt"` and `features.signIn` need
+- [x] **Icons, the small ones.** The sidebar logo and both favicons are AfterNET's, made from the
+      100×100 GIF, which is enough for those sizes. The installed-app icons (`icon-192/512`, the
+      maskable and Apple ones) are still Seance's — see Icons below.
+- [x] **The upstream features.** #40 and #41 are merged; `upstream.ref` is `develop`.
+      ~~ `theme: "cobalt"` and `features.signIn` need
       [evilnet/seance#40](https://github.com/evilnet/seance/pull/40) and
       [#41](https://github.com/evilnet/seance/pull/41) merged. Until then the build succeeds but
       falls back to the default theme and the ordinary connect form. (The workflow's branding check
