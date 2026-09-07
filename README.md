@@ -66,9 +66,7 @@ the entry stops connecting by itself so the next visit asks again.
       `draft/persistence`, `draft/webpush`, `draft/chathistory` and `draft/multiline`). Pages is
       HTTPS, so it has to stay `wss://`. Re-check any change with
       `node tools/irc-ws-probe.mjs wss://host:port/ somenick` from a Seance checkout.
-- [x] **Icons, the small ones.** The sidebar logo and both favicons are AfterNET's, made from the
-      100×100 GIF, which is enough for those sizes. The installed-app icons (`icon-192/512`, the
-      maskable and Apple ones) are still Seance's — see Icons below.
+- [x] **Icons.** All of them are AfterNET's, rendered from `overlay/client/img/logo-art.svg` — see Icons below.
 - [x] **The upstream features.** #40 and #41 are merged; `upstream.ref` is `develop`.
       ~~ `theme: "cobalt"` and `features.signIn` need
       [evilnet/seance#40](https://github.com/evilnet/seance/pull/40) and
@@ -81,22 +79,24 @@ the entry stops connecting by itself so the next visit asks again.
 
 ## Icons
 
-Drop replacements under `overlay/client/img/` (and `overlay/client/favicon.ico`) and they take the
-place of Seance's. The full list, and what each one is for, is in the branding doc under
-"Files a rebranded deploy overwrites". The sizes that matter:
+Every icon is rendered from **`overlay/client/img/logo-art.svg`**, a redraw of the AfterNET mark
+(a `#426bad` disc, the `#314a7b` ring offset to the lower right, the wordmark in `#c6d6f2`). The
+only original we had was a 100×100 GIF, enough for a favicon and nothing larger, so the mark was
+rebuilt as vector and every size comes from that. To change the mark, edit the SVG and re-render:
 
-| File                                     | Used for                                              |
-| ---------------------------------------- | ------------------------------------------------------- |
-| `favicon.ico`, `img/favicon-alerted.ico` | Browser tab, normal and the unread-highlight variant  |
-| `img/icon-192.png`, `img/icon-512.png`   | Installed app, and the notification icon              |
-| `img/icon-maskable-*.png`                | Android/ChromeOS, artwork inside the central 80%      |
-| `img/apple-touch-icon-*.png`             | iOS home screen — must be opaque, iOS ignores alpha   |
-| `img/logo-tile.png`                      | The sidebar logo and the loading splash               |
+```sh
+inkscape logo-art.svg -w 1024 -h 1024 -o mark.png
+for s in 192 512; do convert mark.png -resize ${s}x${s} PNG32:icon-$s.png; done         # purpose: any
+convert mark.png -resize 256x256 PNG32:logo-tile.png                                   # sidebar + splash
+for s in 192 512; do m=$((s*80/100)); convert -size ${s}x${s} xc:'#101720' \
+  \( mark.png -resize ${m}x${m} \) -gravity center -composite icon-maskable-$s.png; done  # art in the central 80%
+for s in 120 152 167 180; do m=$((s*88/100)); convert -size ${s}x${s} xc:'#101720' \
+  \( mark.png -resize ${m}x${m} \) -gravity center -composite apple-touch-icon-$s.png; done  # opaque, iOS
+```
 
-The AfterNET mark we have is a **100×100 GIF from 2008**, which is enough for a favicon and
-nothing larger: a 512px icon from it would be a five-fold upscale, and the install prompt shows
-that icon at full size. The mark is simple geometry — a blue ring and a wordmark — so the right
-fix is to redraw it once as SVG and render every size from that.
+The favicons (`favicon.ico`, `img/favicon-alerted.ico`) are still from the GIF; at 48px and under
+the two are indistinguishable. Which file is used where is in the branding doc under "Files a
+rebranded deploy overwrites".
 
 ## Building it locally
 
