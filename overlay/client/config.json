@@ -31,5 +31,8 @@
     "connect.signInIntro": "Use your AfterNET account, or pick a nick and come in as a guest.",
     "connect.guestTitle": "No account?",
     "connect.guestSubmit": "Come in as a guest"
+  },
+  "uploads": {
+    "preset": "catbox-litterbox"
   }
 }

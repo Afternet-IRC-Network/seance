@@ -73,9 +73,8 @@ the entry stops connecting by itself so the next visit asks again.
       [#41](https://github.com/evilnet/seance/pull/41) merged. Until then the build succeeds but
       falls back to the default theme and the ordinary connect form. (The workflow's branding check
       will fail on the missing `cobalt.css`, which is the point of it.)
-- [ ] **Uploads.** `uploads` is not set, so file sharing is off. Adding it points the paperclip at
-      an uploader AfterNET runs (or at a third-party one); see the branding doc's Uploads section
-      for the contract, which is mostly about CORS.
+- [x] **Uploads** go to Litterbox (`catbox-litterbox` preset), the same as upstream: anonymous,
+      files expire after 72 hours. Point `uploads` at AfterNET's own endpoint to change that.
 
 ## Icons
 
