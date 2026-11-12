@@ -1,7 +1,7 @@
 # AfterNET Chat
 
 AfterNET's web IRC client: [Seance](https://github.com/evilnet/seance) with AfterNET's branding, published to
-**<https://afternet-irc-network.github.io/seance/>**.
+**<https://app.afternet.org/>** (GitHub Pages, custom domain; the old github.io address redirects there).
 
 Seance is a static, bouncer-less client — the browser speaks IRCv3 straight to the ircd over a
 WebSocket, with no server in between. This repository holds **no client code**. It holds the
