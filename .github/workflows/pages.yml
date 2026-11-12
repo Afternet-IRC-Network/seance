@@ -33,7 +33,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Check out the branding
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
         with:
           path: branding
 
@@ -52,7 +52,7 @@ jobs:
           echo "Building evilnet/seance at $ref"
 
       - name: Check out Seance
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
         with:
           repository: evilnet/seance
           ref: ${{ steps.pin.outputs.ref }}
@@ -67,19 +67,33 @@ jobs:
           cat seance/client/config.json
 
       - name: Set up Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v7
         with:
           node-version-file: seance/.node-version
 
-      - name: Enable Yarn (classic) via corepack
-        run: corepack enable
-
+      # Seance builds with pnpm, at the version its package.json's
+      # packageManager names; a ref from before that move (a one-off ref given
+      # to Run workflow) still has Yarn 1's lockfile. Not through corepack:
+      # Node 25+ ships none. The same step as upstream's pages.yml.
       - name: Install
-        run: yarn --frozen-lockfile --non-interactive
+        run: |
+          if [ -f pnpm-lock.yaml ]; then
+            npm install --global "$(node -p 'require("./package.json").packageManager')"
+            pnpm install --frozen-lockfile
+            echo "PM=pnpm" >> "$GITHUB_ENV"
+          else
+            npm install --global yarn@1.22.22
+            yarn --frozen-lockfile --non-interactive
+            echo "PM=yarn" >> "$GITHUB_ENV"
+          fi
         working-directory: seance
+        env:
+          # A Yarn tree would run onnxruntime-node's install script, which
+          # fetches a ~300 MB CUDA provider the browser build never uses.
+          ONNXRUNTIME_NODE_INSTALL: skip
 
       - name: Build
-        run: yarn build
+        run: $PM build
         working-directory: seance
         env:
           NODE_ENV: production
@@ -96,19 +110,19 @@ jobs:
           grep -q 'AfterNET' seance/public/index.html
           echo "branding present in public/"
 
-          # The blue theme and the sign-in panel are upstream pull requests
-          # (evilnet/seance#40, #41). Until they land the config still asks
-          # for them and Seance falls back, which is a working client with
-          # the wrong colours -- worth saying out loud, not worth failing on.
+          # The blue theme and the sign-in panel came from upstream pull
+          # requests (evilnet/seance#40, #41). An older ref without them still
+          # builds, and Seance falls back, which is a working client with the
+          # wrong colours -- worth saying out loud, not worth failing on.
           if [ ! -f seance/public/themes/cobalt.css ]; then
             echo "::warning::the cobalt theme is not in this Seance ref yet (evilnet/seance#40); the deploy falls back to the default theme"
           fi
-          if ! grep -q 'signIn' seance/public/js/bundle.js; then
+          if ! grep -q 'signIn' seance/public/js/bundle*.js; then
             echo "::warning::features.signIn is not in this Seance ref yet (evilnet/seance#41); the deploy shows the ordinary connect form"
           fi
 
       - name: Upload site
-        uses: actions/upload-pages-artifact@v3
+        uses: actions/upload-pages-artifact@v5
         with:
           path: seance/public
 
@@ -121,4 +135,4 @@ jobs:
     steps:
       - name: Deploy
         id: deployment
-        uses: actions/deploy-pages@v4
+        uses: actions/deploy-pages@v5

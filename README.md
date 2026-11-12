@@ -20,7 +20,7 @@ upstream.ref                 which Seance to build: a branch, tag or SHA
 2. The workflow checks that out and copies `overlay/` over it, so `overlay/client/config.json`
    becomes `client/config.json` and any file under `overlay/client/img/` replaces the one Seance
    ships.
-3. `yarn build` writes `public/`, which is deployed to Pages.
+3. `pnpm build` writes `public/`, which is deployed to Pages.
 
 There is no fork and no merge. **Taking an upstream fix is a one-line change to `upstream.ref`**,
 and there is never a conflict to resolve, because nothing here is a modified copy of anything
@@ -103,7 +103,8 @@ Which file is used where is in the branding doc under "Files a rebranded deploy 
 git clone https://github.com/evilnet/seance.git
 cd seance && git checkout "$(cat ../seance-afternet/upstream.ref)"
 cp -R ../seance-afternet/overlay/. .
-corepack yarn && corepack yarn build
+npm i -g "$(node -p 'require("./package.json").packageManager')"
+pnpm install && pnpm build
 python3 -m http.server -d public 8000
 ```
 
