@@ -17,7 +17,8 @@
   "themeColor": "#101720",
   "links": {
     "website": "https://www.afternet.org/",
-    "help": "https://www.afternet.org/help"
+    "help": "https://www.afternet.org/help",
+    "register": "https://accounts.afternet.org/realms/afternet/protocol/openid-connect/registrations?client_id=account&response_type=code&scope=openid&redirect_uri=https%3A%2F%2Faccounts.afternet.org%2Frealms%2Fafternet%2Faccount%2F"
   },
   "features": {
     "signIn": true,

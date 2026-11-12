@@ -48,6 +48,7 @@ upstream. What this deploy sets, and why:
 | `features.signIn: true`                              | The first screen is a sign-in panel — account and password, or a nick and "come in as a guest".        |
 | `features.guestAccess: true`                         | Keep the guest option. Set `false` to require an account.                                               |
 | `theme: "cobalt"`                                    | The blue theme ("Cobalt Frost", dark). `frost` is its light twin; users can still pick another in Settings. |
+| `links.register`                                     | "Register an account" under Sign in: AfterNET's Keycloak registration form (`accounts.afternet.org`, realm `afternet`). Needs Seance with evilnet/seance#286. |
 | `strings.*`                                          | The sign-in copy. Only the listed keys are overridable.                                                 |
 
 An account and password typed into the panel are sent as **SASL PLAIN**, and the account becomes
