@@ -45,8 +45,8 @@ upstream. What this deploy sets, and why:
 | ---------------------------------------------------- | -------------------------------------------------------------------------------------------------------- |
 | `defaultNetwork` + `lockHost`, `allowCustomServer: false` | The client only ever connects to AfterNET. Server fields are not shown, and a link to any other host is refused. |
 | `multiNetwork: false`                                | No "add another network" UI: this is AfterNET's client, not a general one.                              |
-| `features.signIn: true`                              | The first screen is a sign-in panel — account and password, or a nick and "come in as a guest".        |
-| `features.guestAccess: true`                         | Keep the guest option. Set `false` to require an account.                                               |
+| `features.signIn: true`                              | The first screen is a sign-in panel: account and password, and "Register an account" for anyone without one. |
+| `features.guestAccess: false`                        | No "come in as a guest": an account is required (for now). Set `true` to bring the guest option back; its copy (`connect.guestTitle`, `connect.guestSubmit`) is still in `strings`. |
 | `theme: "cobalt"`                                    | The blue theme ("Cobalt Frost", dark). `frost` is its light twin; users can still pick another in Settings. |
 | `links.register`                                     | "Register an account" under Sign in: AfterNET's Keycloak registration form (`accounts.afternet.org`, realm `afternet`). Needs Seance with evilnet/seance#286. |
 | `strings.*`                                          | The sign-in copy. Only the listed keys are overridable.                                                 |
@@ -54,7 +54,7 @@ upstream. What this deploy sets, and why:
 An account and password typed into the panel are sent as **SASL PLAIN**, and the account becomes
 the nick. "Stay signed in on this device" stores the password in that browser's `localStorage` and
 connects automatically next time; without it, nothing is kept and the panel appears again. A
-guest is never remembered.
+guest (while `guestAccess` is on) is never remembered.
 
 If AfterNET's services refuse a login, the connection is **dropped** rather than continuing as an
 unauthenticated stranger (`features.saslDisconnectOnFail`, on by default), the lobby says why, and

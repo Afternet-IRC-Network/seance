@@ -22,14 +22,13 @@
   },
   "features": {
     "signIn": true,
-    "guestAccess": true,
+    "guestAccess": false,
     "allowCustomServer": false,
     "multiNetwork": false,
     "saveNetworks": true
   },
   "strings": {
     "connect.signInTitle": "Sign in to AfterNET",
-    "connect.signInIntro": "Use your AfterNET account, or pick a nick and come in as a guest.",
     "connect.guestTitle": "No account?",
     "connect.guestSubmit": "Come in as a guest"
   },
