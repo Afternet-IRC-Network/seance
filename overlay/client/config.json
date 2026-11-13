@@ -25,7 +25,8 @@
     "guestAccess": false,
     "allowCustomServer": false,
     "multiNetwork": false,
-    "saveNetworks": true
+    "saveNetworks": true,
+    "editNetworks": false
   },
   "strings": {
     "connect.signInTitle": "Sign in to AfterNET",

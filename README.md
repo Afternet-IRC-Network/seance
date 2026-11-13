@@ -47,6 +47,7 @@ upstream. What this deploy sets, and why:
 | `multiNetwork: false`                                | No "add another network" UI: this is AfterNET's client, not a general one.                              |
 | `features.signIn: true`                              | The first screen is a sign-in panel: account and password, and "Register an account" for anyone without one. |
 | `features.guestAccess: false`                        | No "come in as a guest": an account is required (for now). Set `true` to bring the guest option back; its copy (`connect.guestTitle`, `connect.guestSubmit`) is still in `strings`. |
+| `features.editNetworks: false`                       | Settings → Networks is an **Account** page: the network, who you are signed in as, Connect/Disconnect and Sign in/Sign out. The network cannot be edited or removed. Needs Seance with evilnet/seance@3a6d478. |
 | `theme: "cobalt"`                                    | The blue theme ("Cobalt Frost", dark). `frost` is its light twin; users can still pick another in Settings. |
 | `links.register`                                     | "Register an account" under Sign in: AfterNET's Keycloak registration form (`accounts.afternet.org`, realm `afternet`). Needs Seance with evilnet/seance#286. |
 | `strings.*`                                          | The sign-in copy. Only the listed keys are overridable.                                                 |
